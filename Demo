@@ -1,0 +1,77 @@
+#include "weather.h"
+
+#include<stdlib.h>
+
+int length=0;
+//extern int length;
+
+static float sum(float x,float y) { return x + y; }
+static void filter() { }
+
+int main() {
+   //weather_t warr[MAX_SIZE];
+   //TODO: initialize/fill/userinput
+   //weather_t *warr = malloc( MAX_SIZE * sizeof(weather_t));
+   weather_t *warr = calloc( MAX_SIZE, sizeof(weather_t));
+   
+   fillRecord(&warr[3], 104, "Chennai");
+   displayAll(warr,length);
+   displayOne(&warr[0]);
+   
+   weather_t *pres = findCityByCode(warr, length, 103);
+   weather_t *qres = findCityByName(warr, length, "Mumbai");
+   double tres = findAverageTemperature(warr, length);
+   double hres = findMinimumHumidity(warr, length);
+   
+   void (*fpAll)(const weather_t*, int);
+   fpAll=displayAll;
+    
+   void (*fpOne)(const weather_t*);
+   fpOne=displayOne;
+   
+   fpAll(warr,length);
+   fpOne(&warr[1]); 
+   
+   /*fpOne = displayAll;
+   fpOne(warr); -- undefined/program may crash */
+   
+   double (*fcomp)(const weather_t*, int);
+   int ch=1,i=0;
+   if(ch==1) 
+     fcomp = findAverageTemperature;
+   else if(ch==2)
+     fcomp = findMinimumHumidity;
+   else
+     fcomp = displayAll;
+   double fres = fcomp(warr,length);
+   
+  
+   double (*fparr[5])(const weather_t*, int);
+   fparr[0]=findAverageTemperature;
+   fparr[1]=findMinimumHumidity;
+   //fparr[2], fparr[3], fparr[4]
+   fres = (fparr[i])(warr,length);
+   
+   //compute(warr, length, findAverageTemperature);
+   //compute(warr, length, findMinimumHumidity);
+       
+   free(warr);      
+   return 0;
+}  
+
+/*double compute(const weather_t* parr, int n, 
+                  double (*fcomp)(const weather_t*, int) ) {
+   double res = fcomp(warr,n);
+   return res;
+} */
+
+/** 
+ * typedef double (*fpType_t)(const weather_t*, int);
+  
+ * fpType_t fcomp;
+ * fcomp = findAverageTemperature;
+  
+ * fpType fparr[5];
+ * double compute(const weather_t* parr, int n, fpType_t fcomp)
+*/  
+ 
